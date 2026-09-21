@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// Bitácora de observación de aula | Eight Academy
+// Solo ingresan las cuentas registradas en la colección "autorizados".
+// Roles: admin (todo), editor (registra, edita y sube fotos), lector (solo consulta).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // >>> Correo(s) de la administración inicial. Reemplázalo antes de desplegar. <<<
+    function correosAdminInicial() {
+      return ['REEMPLAZA_CORREO_ADMIN@gmail.com'];
+    }
+
+    function sesion() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true;
+    }
+    function correo() { return request.auth.token.email.lower(); }
+    function ficha() { return /databases/$(database)/documents/autorizados/$(correo()); }
+    function autorizado() { return sesion() && exists(ficha()); }
+    function rol() { return get(ficha()).data.rol; }
+    function adminInicial() { return sesion() && correo() in correosAdminInicial(); }
+    function esAdmin() { return adminInicial() || (autorizado() && rol() == 'admin'); }
+    function puedeEditar() { return esAdmin() || (autorizado() && rol() == 'editor'); }
+    function puedeVer() { return esAdmin() || autorizado(); }
+
+    match /autorizados/{email} {
+      allow read: if sesion() && (email == correo() || esAdmin());
+      allow write: if esAdmin()
+        && (request.resource == null || request.resource.data.rol in ['admin', 'editor', 'lector']);
+    }
+
+    match /visitas/{id} {
+      allow read: if puedeVer();
+      allow create, update: if puedeEditar()
+        && id.matches('^VA-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3,}$')
+        && request.resource.data.seccion in ['KIDS', 'PRIMARIA', 'SECUNDARIA'];
+      allow delete: if puedeEditar();
+    }
+
+    match /fotos/{id} {
+      allow read: if puedeVer();
+      allow create, update: if puedeEditar() && request.resource.data.data is string;
+      allow delete: if puedeEditar();
+    }
+
+    match /contadores/{fecha} {
+      allow read, write: if puedeEditar();
+    }
+
+    match /config/{doc} {
+      allow read: if puedeVer();
+      allow write: if esAdmin();
+    }
+  }
+}
