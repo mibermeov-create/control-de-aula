@@ -9,7 +9,7 @@ service cloud.firestore {
 
     // >>> Correo(s) de la administración inicial. Reemplázalo antes de desplegar. <<<
     function correosAdminInicial() {
-      return ['REEMPLAZA_CORREO_ADMIN@gmail.com'];
+      return ['mibermeov@eightacademy.edu.ec'];
     }
 
     function sesion() {

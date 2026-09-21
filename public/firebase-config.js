@@ -3,10 +3,10 @@
 // Estos valores identifican el proyecto; no son contraseñas. La seguridad la dan
 // el inicio de sesión y las reglas de firestore.rules.
 export const firebaseConfig = {
-  apiKey: "REEMPLAZA_API_KEY",
-  authDomain: "REEMPLAZA_ID_DEL_PROYECTO.firebaseapp.com",
-  projectId: "REEMPLAZA_ID_DEL_PROYECTO",
-  storageBucket: "REEMPLAZA_ID_DEL_PROYECTO.firebasestorage.app",
-  messagingSenderId: "REEMPLAZA",
-  appId: "REEMPLAZA"
+  apiKey: "AIzaSyC05N8RoO54CuaUd4E7muYAt5SrIfK_whM",
+  authDomain: "bitacora-eight-academy.firebaseapp.com",
+  projectId: "bitacora-eight-academy",
+  storageBucket: "bitacora-eight-academy.firebasestorage.app",
+  messagingSenderId: "512824880211",
+  appId: "1:512824880211:web:c7a8b99298c9b3867daaa6"
 };
