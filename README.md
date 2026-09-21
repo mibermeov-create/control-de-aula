@@ -2,12 +2,24 @@
 
 Sistema institucional de registro, observación y seguimiento de visitas de aula para las secciones Kids, Primaria y Secundaria. Funciona en el navegador y en el celular, guarda todo en Firebase (Firestore) y se publica con Firebase Hosting.
 
+## Estado: en producción
+
+| | |
+|---|---|
+| URL de la app | https://bitacora-eight-academy.web.app |
+| Manual de uso | https://bitacora-eight-academy.web.app/manual.html (enlazado también desde la pantalla de acceso) |
+| Proyecto de Firebase | `bitacora-eight-academy` (Firestore en `nam5`, Authentication con Google habilitado) |
+| Administrador inicial | `mibermeov@eightacademy.edu.ec` (definido en `firestore.rules`) |
+| Cuentas autorizadas | 16 correos institucionales cargados en Firestore (`autorizados`); gestiona el resto desde **Ajustes → Usuarios autorizados** dentro de la app |
+| Datos de prueba | Se eliminaron `visitas`, `fotos` y `contadores` antes de salir a producción; la base quedó limpia |
+
 ## Qué incluye
 
 | Archivo | Uso |
 |---|---|
 | `public/index.html` | La aplicación completa |
-| `public/firebase-config.js` | Datos de conexión del proyecto de Firebase (se completan una vez) |
+| `public/manual.html` | Manual de uso interactivo para el equipo (roles, cómo registrar una visita, ajustes, preguntas frecuentes) |
+| `public/firebase-config.js` | Datos de conexión del proyecto de Firebase (ya completado, ver tabla de estado arriba) |
 | `public/logo.png` | Logo institucional (ícono del navegador) |
 | `firestore.rules` | Reglas de seguridad: solo cuentas autorizadas y permisos por rol |
 | `firestore.indexes.json` | Excluye las fotografías de los índices |
@@ -33,7 +45,9 @@ Las fotografías se guardan comprimidas dentro de Firestore para que el proyecto
 | Editor | Registrar, editar y eliminar visitas, y subir fotografías |
 | Lector | Consultar registros, docentes y tablero |
 
-## Puesta en marcha
+## Puesta en marcha (referencia — ya completada para este proyecto)
+
+Estos pasos ya se ejecutaron para `bitacora-eight-academy` (ver tabla de estado arriba). Se conservan aquí como referencia para recrear el entorno si alguna vez hace falta (por ejemplo, un proyecto de respaldo o un colegio hermano).
 
 ### 1. Crear el proyecto de Firebase
 

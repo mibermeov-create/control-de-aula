@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manual de uso — Bitácora de observación de aula</title>
+<link rel="icon" href="logo.png">
+<style>
+:root{
+  --bg:#F3F6FA; --surface:#FFFFFF; --surface-2:#FAFBFC; --surface-3:#EEF3FA;
+  --ink:#252733; --ink-2:#434859; --muted:#667085; --line:#D7DCE3; --line-2:#BCC4D0;
+  --title:#2A153D; --primary:#2F3C6F; --on-primary:#FFFFFF; --purple:#2A153D;
+  --cyan:#39DADB; --cyan-soft:#E8FBFB; --teal:#5DAF86; --teal-ink:#2B7550; --teal-soft:#E9F5EF;
+  --yellow:#FFD54C; --yellow-soft:#FFF6D6; --orange:#F2A000; --orange-ink:#8F5D00;
+  --kids:#8FD3F4; --kids-ink:#1D6A91; --kids-soft:#EAF6FD;
+  --pri:#E98FA5; --pri-ink:#AE3A5A; --pri-soft:#FCEBEF;
+  --sec:#3FCBBF; --sec-ink:#0F766D; --sec-soft:#E2F7F5;
+  --danger:#B42318; --danger-soft:#FDECEA;
+  --shadow:0 1px 2px rgba(20,25,50,.04), 0 8px 22px -14px rgba(20,25,50,.25);
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+    --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
+    --title:#DCCFF2; --primary:#9AA8EA; --on-primary:#11132A;
+    --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
+    --yellow-soft:#39321A; --orange-ink:#F4BE52;
+    --kids-ink:#A9DEF8; --kids-soft:#15303F; --pri-ink:#F4AABB; --pri-soft:#3A2130; --sec-ink:#7FE3D9; --sec-soft:#123733;
+    --danger:#F28B7F; --danger-soft:#3E1F1D; --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+  --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
+  --title:#DCCFF2; --primary:#9AA8EA; --on-primary:#11132A;
+  --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
+  --yellow-soft:#39321A; --orange-ink:#F4BE52;
+  --kids-ink:#A9DEF8; --kids-soft:#15303F; --pri-ink:#F4AABB; --pri-soft:#3A2130; --sec-ink:#7FE3D9; --sec-soft:#123733;
+  --danger:#F28B7F; --danger-soft:#3E1F1D; --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:var(--primary)}
+
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:40; background:linear-gradient(180deg,#B2F3FD 0%,#DEFAFF 100%); border-bottom:3px solid var(--cyan); display:flex; align-items:center; gap:12px; padding:10px 16px; flex-wrap:wrap}
+.top img{height:38px}
+.top h1{font-size:16px; margin:0; color:#2A153D; font-weight:800; flex:1; min-width:180px}
+.top .tools{display:flex; gap:8px; align-items:center}
+.top button, .top a.btn{border:1px solid rgba(47,60,111,.25); background:rgba(255,255,255,.8); color:#2F3C6F; border-radius:8px; padding:8px 12px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px}
+.top button:hover, .top a.btn:hover{background:#fff}
+.top input[type=search]{border:1px solid rgba(47,60,111,.25); background:rgba(255,255,255,.9); border-radius:8px; padding:8px 10px; font-size:13px; width:170px; color:#2F3C6F}
+
+.shell{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:230px 1fr; gap:0; align-items:start}
+@media (max-width:860px){ .shell{grid-template-columns:1fr} }
+
+nav.side{position:sticky; top:calc(58px + env(safe-area-inset-top,0px)); align-self:start; padding:20px 12px; max-height:calc(100vh - 58px); overflow:auto}
+@media (max-width:860px){ nav.side{position:static; max-height:none; padding:14px 16px 0} }
+nav.side .grp{margin-bottom:14px}
+nav.side .grp-t{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:800; margin:0 0 6px 10px}
+nav.side a{display:block; padding:8px 10px; border-radius:8px; color:var(--ink-2); text-decoration:none; font-size:13.5px; font-weight:600}
+nav.side a:hover{background:var(--surface-3)}
+nav.side a.on{background:var(--primary); color:var(--on-primary)}
+
+main{padding:24px 20px 80px; min-width:0}
+section{scroll-margin-top:70px; margin-bottom:44px}
+section h2{font-size:22px; color:var(--title); margin:0 0 6px; display:flex; align-items:center; gap:10px}
+section .lead{color:var(--muted); margin:0 0 18px; font-size:14px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:18px 20px; margin-bottom:14px}
+.card h3{margin:0 0 8px; font-size:15px; color:var(--title)}
+.card p{margin:0 0 8px}
+.card p:last-child{margin-bottom:0}
+.badge{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:999px; border:1px solid transparent}
+.badge.admin{background:var(--pri-soft); color:var(--pri-ink); border-color:var(--pri)}
+.badge.editor{background:var(--teal-soft); color:var(--teal-ink); border-color:var(--teal)}
+.badge.lector{background:var(--surface-3); color:var(--muted); border-color:var(--line-2)}
+.badge.kids{background:var(--kids-soft); color:var(--kids-ink); border-color:var(--kids)}
+.badge.pri{background:var(--pri-soft); color:var(--pri-ink); border-color:var(--pri)}
+.badge.sec{background:var(--sec-soft); color:var(--sec-ink); border-color:var(--sec)}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:640px){ .grid2{grid-template-columns:1fr} }
+
+.stepper{display:flex; flex-direction:column; gap:10px}
+.step{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+.step button.head{width:100%; display:flex; align-items:center; gap:12px; padding:14px 16px; background:none; border:0; cursor:pointer; text-align:left; font:inherit; color:var(--ink)}
+.step .num{flex:none; width:30px; height:30px; border-radius:999px; background:var(--surface-3); color:var(--primary); display:grid; place-items:center; font-weight:800; font-size:13px; border:1.5px solid var(--line-2)}
+.step[open] .num{background:var(--primary); color:var(--on-primary); border-color:var(--primary)}
+.step .head b{font-size:14.5px}
+.step .head small{display:block; color:var(--muted); font-weight:500; font-size:12.5px}
+.step .chev{margin-left:auto; transition:transform .15s; color:var(--muted)}
+.step[open] .chev{transform:rotate(180deg)}
+.step .body{padding:0 16px 16px 58px; color:var(--ink-2); font-size:13.8px}
+.step .body ul{margin:6px 0; padding-left:18px}
+.step .body li{margin:4px 0}
+
+.faq{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); margin-bottom:10px; overflow:hidden}
+.faq summary{padding:14px 16px; cursor:pointer; font-weight:700; font-size:14px; list-style:none; display:flex; align-items:center; gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:before{content:"+"; font-size:18px; color:var(--primary); width:18px}
+.faq[open] summary:before{content:"−"}
+.faq .a{padding:0 16px 16px 44px; color:var(--ink-2); font-size:13.8px}
+
+.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
+.tbl th{background:var(--primary); color:var(--on-primary); text-align:left; padding:10px 12px; font-weight:700}
+.tbl td{padding:10px 12px; border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl-wrap{overflow-x:auto; border-radius:12px; border:1px solid var(--line); box-shadow:var(--shadow)}
+
+.note{display:flex; gap:10px; background:var(--cyan-soft); border:1px solid var(--cyan); border-radius:12px; padding:12px 14px; font-size:13.5px; color:var(--ink-2)}
+.note.warn{background:var(--yellow-soft); border-color:var(--orange)}
+.note b{color:var(--ink)}
+
+mark{background:var(--yellow); color:#2A2100; border-radius:3px; padding:0 2px}
+.hide-search{display:none!important}
+
+footer{text-align:center; color:var(--muted); font-size:12.5px; padding:30px 20px 50px}
+
+@media print{
+  .top,.tools,nav.side{display:none!important}
+  .shell{grid-template-columns:1fr}
+  .card,.step,.faq{box-shadow:none; border:1px solid #ccc}
+  section{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <img src="logo.png" alt="Eight Academy">
+  <h1>Manual de uso · Bitácora de observación de aula</h1>
+  <div class="tools">
+    <input type="search" id="buscar" placeholder="Buscar en el manual…">
+    <a class="btn" href="index.html">Ir a la app</a>
+    <button id="btnPrint" type="button">Imprimir</button>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="side" id="side">
+    <div class="grp">
+      <p class="grp-t">Empezar</p>
+      <a href="#bienvenida">Bienvenida</a>
+      <a href="#ingresar">Ingresar a la app</a>
+      <a href="#roles">Roles y permisos</a>
+    </div>
+    <div class="grp">
+      <p class="grp-t">Uso diario</p>
+      <a href="#nueva-visita">Registrar una visita</a>
+      <a href="#registros">Consultar registros</a>
+      <a href="#docentes">Docentes</a>
+      <a href="#tablero">Tablero</a>
+    </div>
+    <div class="grp">
+      <p class="grp-t">Administración</p>
+      <a href="#ajustes">Ajustes</a>
+      <a href="#respaldo">Respaldo</a>
+    </div>
+    <div class="grp">
+      <p class="grp-t">Ayuda</p>
+      <a href="#faq">Preguntas frecuentes</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <section id="bienvenida">
+      <h2>👋 Bienvenida</h2>
+      <p class="lead">Esta bitácora registra las visitas de acompañamiento a las secciones Kids, Primaria y Secundaria. Funciona en el navegador del computador o del celular y guarda todo en la nube: no se pierde nada aunque cambies de dispositivo.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3>¿Qué puedo hacer aquí?</h3>
+          <p>Registrar visitas de aula en 5 pasos guiados, consultar el historial por docente, ver un tablero de indicadores y (si eres Administrador) gestionar quién tiene acceso.</p>
+        </div>
+        <div class="card">
+          <h3>¿Necesito instalar algo?</h3>
+          <p>No. Es una página web. Puedes guardarla en la pantalla de inicio del celular como acceso directo, pero no requiere descargar nada.</p>
+        </div>
+      </div>
+      <div class="note">Consejo: agrega esta página del manual a favoritos junto con la app — así siempre tendrás la guía a la mano durante una visita.</div>
+    </section>
+
+    <section id="ingresar">
+      <h2>🔑 Ingresar a la app</h2>
+      <p class="lead">El acceso es exclusivo para correos institucionales autorizados por el colegio.</p>
+      <div class="stepper">
+        <div class="step" open>
+          <button class="head" type="button"><span class="num">1</span><span><b>Abre la app</b><small>bitacora-eight-academy.web.app</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Entra desde el navegador de tu computador o celular. No necesitas crear una cuenta nueva.</p></div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">2</span><span><b>Toca "Ingresar con Google"</b><small>Usa tu correo @eightacademy.edu.ec</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Elige tu cuenta institucional en la ventana de Google. Si tienes varias cuentas de Google en el navegador, asegúrate de elegir la del colegio.</p></div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">3</span><span><b>Listo</b><small>Entras directo a "Nueva visita"</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Si tu correo está autorizado, entras de inmediato. Si ves un mensaje de que tu cuenta no tiene acceso, pide a un Administrador que te agregue en <a href="#ajustes">Ajustes → Usuarios autorizados</a>.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roles">
+      <h2>🛡️ Roles y permisos</h2>
+      <p class="lead">Cada cuenta autorizada tiene uno de estos tres roles. El rol determina qué ves y qué puedes hacer.</p>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Rol</th><th>Puede</th><th>No puede</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge admin">Administrador</span></td><td>Todo: registrar visitas, gestionar usuarios, editar nómina, logo y respaldos</td><td>—</td></tr>
+            <tr><td><span class="badge editor">Editor</span></td><td>Registrar, editar y eliminar visitas; subir fotografías</td><td>Gestionar usuarios ni ajustes del colegio</td></tr>
+            <tr><td><span class="badge lector">Lector</span></td><td>Consultar registros, docentes y el tablero</td><td>Registrar, editar o eliminar visitas</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">La mayoría del personal debería tener rol <b>Editor</b>. Reserva <b>Administrador</b> para quien gestiona el sistema, y <b>Lector</b> para quien solo necesita consultar reportes.</div>
+    </section>
+
+    <section id="nueva-visita">
+      <h2>📝 Registrar una visita</h2>
+      <p class="lead">El formulario tiene 5 pasos. Puedes avanzar y regresar entre ellos sin perder lo escrito; el registro solo se guarda al confirmar en el último paso.</p>
+      <div class="stepper">
+        <div class="step" open>
+          <button class="head" type="button"><span class="num">1</span><span><b>Datos de la visita</b><small>Sección, docente, curso, horario</small></span><span class="chev">⌄</span></button>
+          <div class="body">
+            <p>Elige la sección: <span class="badge kids">Kids</span> <span class="badge pri">Primaria</span> <span class="badge sec">Secundaria</span> — cada una tiene su color institucional para identificarla rápido en los listados.</p>
+            <ul>
+              <li>Fecha de visita, observador/a y docente observado/a</li>
+              <li>Curso, paralelo, materia y tema tratado</li>
+              <li>Hora de inicio y fin — la duración se calcula sola</li>
+            </ul>
+            <p>Al terminar el registro se le asigna un identificador único, por ejemplo <code>VA-2026-09-21-001</code>, correlativo por día.</p>
+          </div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">2</span><span><b>Observación</b><small>Qué sucede en el aula</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Describe lo observado en el desarrollo de la clase. Si la clase incluye criterios de segunda lengua (inglés), hay un espacio adicional para registrar esas observaciones.</p></div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">3</span><span><b>Prácticas y mejora</b><small>Lo positivo y lo que se puede fortalecer</small></span><span class="chev">⌄</span></button>
+          <div class="body">
+            <ul>
+              <li><b>Buenas prácticas observadas:</b> qué funcionó bien y cómo se evidenció</li>
+              <li><b>Situaciones de mejora:</b> qué se puede fortalecer, con una recomendación breve y aplicable</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">4</span><span><b>Valoración</b><small>Nivel de acompañamiento y reconocimiento</small></span><span class="chev">⌄</span></button>
+          <div class="body">
+            <p>Define el <b>acompañamiento requerido</b>: no requiere, seguimiento recomendado o prioritario. Si la visita lo amerita, marca un <b>reconocimiento de buena práctica</b> con el motivo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">5</span><span><b>Evidencias y revisión</b><small>Fotos y confirmación final</small></span><span class="chev">⌄</span></button>
+          <div class="body">
+            <p>Sube hasta 2 fotografías de la visita (se comprimen automáticamente). Revisa el resumen completo del registro antes de guardar — una vez guardado, el registro queda disponible para todo el equipo autorizado.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note warn"><b>Sin conexión a internet:</b> la app guarda una copia local del formulario y sincroniza cuando vuelve la señal. Para que se asigne el identificador de una visita nueva, sí necesitas conexión al menos una vez.</div>
+    </section>
+
+    <section id="registros">
+      <h2>📋 Consultar registros</h2>
+      <p class="lead">La sección <b>Registros</b> lista todas las visitas guardadas.</p>
+      <div class="card">
+        <h3>Filtros disponibles</h3>
+        <p>Puedes combinar: búsqueda por texto (docente, materia, tema o práctica), sección, observador/a y nivel de acompañamiento, para encontrar rápido lo que buscas.</p>
+      </div>
+    </section>
+
+    <section id="docentes">
+      <h2>🧑‍🏫 Docentes</h2>
+      <p class="lead">Muestra el historial de observaciones agrupado por docente, con el estado de acompañamiento de su visita más reciente.</p>
+      <div class="card">
+        <p>Filtra por nombre, sección o estado: acompañamiento prioritario, seguimiento, con práctica destacada, o sin visitas todavía — útil para saber a quién le falta una visita este periodo.</p>
+      </div>
+    </section>
+
+    <section id="tablero">
+      <h2>📊 Tablero</h2>
+      <p class="lead">Lectura consolidada de las observaciones, pensada para la toma de decisiones del equipo académico.</p>
+      <div class="grid2">
+        <div class="card"><h3>Cobertura</h3><p>Visitas por día, por sección y por observador/a — para verificar que el equipo esté cumpliendo con las visitas planificadas.</p></div>
+        <div class="card"><h3>Tendencias</h3><p>Buenas prácticas más frecuentes y situaciones de mejora recurrentes, más los docentes que requieren acompañamiento prioritario.</p></div>
+      </div>
+    </section>
+
+    <section id="ajustes">
+      <h2>⚙️ Ajustes <span class="badge admin">Solo Administrador</span></h2>
+      <p class="lead">Aquí se gestionan las personas, las listas de referencia y la identidad de la bitácora.</p>
+      <div class="stepper">
+        <div class="step" open>
+          <button class="head" type="button"><span class="num">1</span><span><b>Usuarios autorizados</b><small>Quién entra y con qué rol</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Escribe el correo institucional y elige el rol (Editor, Lector o Administrador). El cambio aplica de inmediato la próxima vez que esa persona ingrese.</p></div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">2</span><span><b>Nómina y listas de apoyo</b><small>Docentes, observadores y materias</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Cargar estas listas activa el autocompletado en el formulario de nueva visita y mejora los reportes del Tablero y de Docentes (permite ver quién todavía no recibe visita).</p></div>
+        </div>
+        <div class="step">
+          <button class="head" type="button"><span class="num">3</span><span><b>Logo institucional</b><small>Aparece en el encabezado y en la pantalla de acceso</small></span><span class="chev">⌄</span></button>
+          <div class="body"><p>Reemplázalo si cambia la imagen institucional. Se aplica a todos los usuarios.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="respaldo">
+      <h2>💾 Respaldo</h2>
+      <p class="lead">Buena práctica: descarga un respaldo periódicamente, sobre todo antes de cambios grandes en la nómina o en usuarios.</p>
+      <div class="grid2">
+        <div class="card"><h3>Descargar respaldo</h3><p>Desde <b>Ajustes</b>, genera un archivo JSON con todos los registros. Guárdalo en un lugar seguro (Drive institucional, por ejemplo).</p></div>
+        <div class="card"><h3>Importar respaldo</h3><p>Solo un Administrador puede importar. Se conservan todos los registros y sus identificadores originales; las fotografías de respaldos antiguos no siempre se pueden restaurar.</p></div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>❓ Preguntas frecuentes</h2>
+
+      <details class="faq">
+        <summary>No puedo ingresar, dice que mi cuenta no tiene acceso</summary>
+        <div class="a">Pide a un Administrador que agregue tu correo institucional en <a href="#ajustes">Ajustes → Usuarios autorizados</a>. Verifica también que estás usando la cuenta de Google correcta (@eightacademy.edu.ec).</div>
+      </details>
+
+      <details class="faq">
+        <summary>¿Puedo editar una visita ya guardada?</summary>
+        <div class="a">Sí, si tienes rol Editor o Administrador. Búscala en <a href="#registros">Registros</a> y ábrela para modificarla.</div>
+      </details>
+
+      <details class="faq">
+        <summary>Perdí la señal de internet a mitad del registro, ¿pierdo lo escrito?</summary>
+        <div class="a">No. La app guarda una copia local mientras escribes y sincroniza en cuanto vuelve la conexión. Solo ten en cuenta que asignar el identificador de una visita nueva sí requiere conexión al menos una vez.</div>
+      </details>
+
+      <details class="faq">
+        <summary>¿Cuántas fotos puedo subir por visita?</summary>
+        <div class="a">Hasta 2 fotografías por visita. Se comprimen automáticamente para que el proyecto se mantenga dentro del plan gratuito.</div>
+      </details>
+
+      <details class="faq">
+        <summary>¿Quién puede ver los registros?</summary>
+        <div class="a">Cualquier cuenta autorizada, sin importar el rol. Editor y Administrador además pueden crear y modificar; Lector solo consulta.</div>
+      </details>
+
+      <details class="faq">
+        <summary>Necesito que alguien deje de tener acceso</summary>
+        <div class="a">Un Administrador puede eliminar o cambiar el rol de esa persona desde <a href="#ajustes">Ajustes → Usuarios autorizados</a>.</div>
+      </details>
+    </section>
+
+  </main>
+</div>
+
+<footer>Bitácora de observación de aula · Eight Academy</footer>
+
+<script>
+(function(){
+  try{
+    // Acordeón de pasos: un solo paso abierto a la vez dentro de cada .stepper
+    document.querySelectorAll('.stepper').forEach(function(group){
+      group.querySelectorAll('.step > .head').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var step = btn.parentElement;
+          var willOpen = !step.hasAttribute('open');
+          group.querySelectorAll('.step').forEach(function(s){ s.removeAttribute('open'); });
+          if(willOpen) step.setAttribute('open','');
+        });
+      });
+    });
+
+    // Resalta el enlace activo del menú lateral según la sección visible
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.side a'));
+    var map = {};
+    links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            links.forEach(function(a){ a.classList.remove('on'); });
+            var l = map[en.target.id];
+            if(l) l.classList.add('on');
+          }
+        });
+      }, {rootMargin:'-40% 0px -50% 0px'});
+      sections.forEach(function(s){ io.observe(s); });
+    }
+
+    // Imprimir
+    var pb = document.getElementById('btnPrint');
+    if(pb) pb.addEventListener('click', function(){ window.print(); });
+
+    // Buscador: filtra tarjetas, pasos y preguntas por texto y resalta coincidencias
+    var input = document.getElementById('buscar');
+    var searchable = Array.prototype.slice.call(document.querySelectorAll('main .card, main .step, main .faq'));
+    var marks = [];
+    function clearMarks(){
+      marks.forEach(function(m){
+        var parent = m.parentNode;
+        if(!parent) return;
+        parent.replaceChild(document.createTextNode(m.textContent), m);
+        parent.normalize();
+      });
+      marks = [];
+    }
+    function markText(el, term){
+      Array.prototype.slice.call(el.childNodes).forEach(function(node){
+        if(node.nodeType === 3){
+          var idx = node.textContent.toLowerCase().indexOf(term);
+          if(idx > -1){
+            var span = document.createElement('span');
+            var before = node.textContent.slice(0, idx);
+            var match = node.textContent.slice(idx, idx + term.length);
+            var after = node.textContent.slice(idx + term.length);
+            span.appendChild(document.createTextNode(before));
+            var mk = document.createElement('mark');
+            mk.textContent = match;
+            span.appendChild(mk);
+            span.appendChild(document.createTextNode(after));
+            node.parentNode.replaceChild(span, node);
+            marks.push(mk);
+          }
+        } else if(node.nodeType === 1 && node.tagName !== 'MARK'){
+          markText(node, term);
+        }
+      });
+    }
+    if(input){
+      input.addEventListener('input', function(){
+        var term = input.value.trim().toLowerCase();
+        clearMarks();
+        searchable.forEach(function(el){
+          if(!term){ el.classList.remove('hide-search'); return; }
+          var hit = el.textContent.toLowerCase().indexOf(term) > -1;
+          el.classList.toggle('hide-search', !hit);
+          if(hit){
+            if(el.classList.contains('step')) el.setAttribute('open','');
+            if(el.tagName === 'DETAILS') el.setAttribute('open','');
+            markText(el, term);
+          }
+        });
+      });
+    }
+  }catch(e){ /* el manual sigue siendo legible aunque falle el script */ }
+})();
+</script>
+</body>
+</html>
