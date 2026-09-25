@@ -1,55 +1,94 @@
 rules_version = '2';
-
 // Bitácora de observación de aula | Eight Academy
-// Solo ingresan las cuentas registradas en la colección "autorizados".
-// Roles: admin (todo), editor (registra, edita y sube fotos), lector (solo consulta).
-
+// Reglas reforzadas: solo cuentas verificadas de @eightacademy.edu.ec,
+// super administradores fijos y protección contra sobrescritura de visitas.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // >>> Correo(s) de la administración inicial. Reemplázalo antes de desplegar. <<<
-    function correosAdminInicial() {
-      return ['mibermeov@eightacademy.edu.ec'];
+    // ===== Super administradores (siempre tienen acceso total) =====
+    function superAdmins() {
+      return ['mibermeov@eightacademy.edu.ec', 'dsroblesl@eightacademy.edu.ec'];
     }
 
+    // ===== Sesión válida: correo verificado y SOLO del dominio institucional =====
+    function correo() { return request.auth.token.email.lower(); }
+    function dominioOk(mail) { return mail.matches('^[^@]+@eightacademy[.]edu[.]ec$'); }
     function sesion() {
       return request.auth != null
         && request.auth.token.email != null
-        && request.auth.token.email_verified == true;
+        && request.auth.token.email_verified == true
+        && dominioOk(correo());
     }
-    function correo() { return request.auth.token.email.lower(); }
+
+    // ===== Roles =====
     function ficha() { return /databases/$(database)/documents/autorizados/$(correo()); }
     function autorizado() { return sesion() && exists(ficha()); }
     function rol() { return get(ficha()).data.rol; }
-    function adminInicial() { return sesion() && correo() in correosAdminInicial(); }
-    function esAdmin() { return adminInicial() || (autorizado() && rol() == 'admin'); }
+    function superAdmin() { return sesion() && correo() in superAdmins(); }
+    function esAdmin() { return superAdmin() || (autorizado() && rol() == 'admin'); }
     function puedeEditar() { return esAdmin() || (autorizado() && rol() == 'editor'); }
     function puedeVer() { return esAdmin() || autorizado(); }
 
+    // ===== Usuarios autorizados =====
+    // Solo administración gestiona accesos, y solo con correos institucionales.
     match /autorizados/{email} {
       allow read: if sesion() && (email == correo() || esAdmin());
-      allow write: if esAdmin()
-        && (request.resource == null || request.resource.data.rol in ['admin', 'editor', 'lector']);
+      allow create, update: if esAdmin()
+        && email == email.lower()
+        && dominioOk(email)
+        && request.resource.data.rol in ['admin', 'editor', 'lector'];
+      allow delete: if esAdmin();
     }
 
+    // ===== Visitas =====
     match /visitas/{id} {
+      function datosValidos() {
+        return id.matches('^VA-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3,}$')
+          && request.resource.data.seccion in ['KIDS', 'PRIMARIA', 'SECUNDARIA'];
+      }
       allow read: if puedeVer();
-      allow create, update: if puedeEditar()
-        && id.matches('^VA-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3,}$')
-        && request.resource.data.seccion in ['KIDS', 'PRIMARIA', 'SECUNDARIA'];
-      allow delete: if puedeEditar();
+
+      // Crear: solo si el código no existe (create nunca sobrescribe).
+      allow create: if puedeEditar() && datosValidos()
+        && (esAdmin() || request.resource.data.get('creadoPor', '') == correo());
+
+      // Actualizar: se conserva la fecha y el autor de creación originales.
+      // Esto impide que una visita nueva reemplace por error a una existente.
+      allow update: if puedeEditar() && datosValidos()
+        && (esAdmin() || (
+              request.resource.data.get('creado', null) == resource.data.get('creado', null)
+              || resource.data.get('creado', null) == null
+            ))
+        && (esAdmin() || request.resource.data.get('actualizadoPor', '') == correo());
+
+      // Eliminar: administración, o el editor que creó la visita.
+      allow delete: if esAdmin()
+        || (puedeEditar() && resource.data.get('creadoPor', '') == correo());
     }
 
+    // ===== Fotografías (máximo ~1 MB por documento) =====
     match /fotos/{id} {
       allow read: if puedeVer();
-      allow create, update: if puedeEditar() && request.resource.data.data is string;
+      allow create, update: if puedeEditar()
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 1000000;
       allow delete: if puedeEditar();
     }
 
+    // ===== Contador correlativo por día =====
+    // Solo puede avanzar: nadie puede reiniciarlo ni bajarlo (evita códigos repetidos).
     match /contadores/{fecha} {
-      allow read, write: if puedeEditar();
+      allow read: if puedeEditar();
+      allow create: if puedeEditar()
+        && fecha.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.n is int && request.resource.data.n >= 1;
+      allow update: if puedeEditar()
+        && request.resource.data.n is int
+        && request.resource.data.n > resource.data.n;
+      allow delete: if esAdmin();
     }
 
+    // ===== Configuración (nómina, listas, logo) =====
     match /config/{doc} {
       allow read: if puedeVer();
       allow write: if esAdmin();
